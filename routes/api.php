@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/', function () {
+    return [
+        'version' => '1.0.0'
+    ];
+});
+
+Route::get('/lost_pets/search', [\App\Http\Controllers\Api\LostPetController::class, 'search']);
+Route::apiResource('/lost_pets', \App\Http\Controllers\Api\LostPetController::class);
+Route::apiResource('/pet_details', \App\Http\Controllers\Api\PetDetailController::class);

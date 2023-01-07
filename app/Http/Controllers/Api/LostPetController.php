@@ -31,29 +31,60 @@ class LostPetController extends Controller
     public function store(Request $request)
     {
         $lostPet = new LostPet();
-        $lostPet->name = $request->get('name');
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
         $lostPet->description = $request->get('description');
         $lostPet->contact_info = $request->get('contact_info');
 
         if ($lostPet->save()) {
+//            $petDetail = new PetDetail();
+//            $petDetail->name = fake()->realText(10);
+//            $petDetail->type = fake()->realText(10);
+//            $petDetail->age = fake()->numberBetween(1,100);
+//            $petDetail->gender = fake()->realText(10);
+//            $petDetail->breed = fake()->realText(10);
+//            $petDetail->color = fake()->realText(10);
+//            $petDetail->size = fake()->realText(10);
+//            $petDetail->collar = fake()->realText(10);
+//            $petDetail->leg_ring = fake()->realText(10);
+//
+//            $lostPet->petDetail()->save($petDetail);
+//
             $petDetail = new PetDetail();
-            $petDetail->type = fake()->realText(10);
-            $petDetail->age = fake()->numberBetween(1,100);
-            $petDetail->gender = fake()->realText(10);
-            $petDetail->breed = fake()->realText(10);
-            $petDetail->color = fake()->realText(10);
-            $petDetail->size = fake()->realText(10);
-            $petDetail->collar = fake()->realText(10);
-            $petDetail->leg_ring = fake()->realText(10);
+            if ($request->has('pet_detail.name'))
+                $petDetail->name = $request->get('pet_detail')['name'];
+
+            if ($request->has('pet_detail.type'))
+                $petDetail->type = $request->get('pet_detail')['type'];
+
+            if ($request->has('pet_detail.age'))
+                $petDetail->age = $request->get('pet_detail')['age'];
+
+            if ($request->has('pet_detail.gender'))
+                $petDetail->gender = $request->get('pet_detail')['gender'];
+
+            if ($request->has('pet_detail.breed'))
+                $petDetail->breed = $request->get('pet_detail')['breed'];
+
+            if ($request->has('pet_detail.color'))
+                $petDetail->color = $request->get('pet_detail')['color'];
+
+            if ($request->has('pet_detail.size'))
+                $petDetail->size = $request->get('pet_detail')['size'];
+
+            if ($request->has('pet_detail.collar'))
+                $petDetail->collar = $request->get('pet_detail')['collar'];
+
+            if ($request->has('pet_detail.leg_ring'))
+                $petDetail->leg_ring = $request->get('pet_detail')['leg_ring'];
 
             $lostPet->petDetail()->save($petDetail);
 
-
+//            $testkub = $request->get('pet_details')['name'];
 
             return response()->json([
                 'success' => true,
+//                'test' => $testkub,
                 'message' => 'Lost pet created with id ' . $lostPet->id,
                 'lost_pet_id' => $lostPet->id
             ], Response::HTTP_CREATED);

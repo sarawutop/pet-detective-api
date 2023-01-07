@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('pet_details', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\LostPet::class);
+            $table->string('name');
             $table->string('type');
             $table->integer('age')->nullable();
             $table->string('gender')->nullable();

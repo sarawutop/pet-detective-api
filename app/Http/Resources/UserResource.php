@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LostPetResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,8 @@ class LostPetResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'location' => $this->location,
-            'lost_at' => $this->lost_at,
-            'description' => $this->description,
-            'contact_info' => $this->contact_info,
-            'pet_detail' => new PetDetailResource($this->WhenLoaded('petDetail'))
+            'email' => $this->email,
+            'image_path' => $this->image_path,
         ];
     }
 }

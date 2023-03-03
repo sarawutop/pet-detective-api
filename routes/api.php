@@ -27,6 +27,8 @@ Route::get('/', function () {
 Route::get('/lost_pets/search', [\App\Http\Controllers\Api\LostPetController::class, 'search']);
 Route::apiResource('/lost_pets', \App\Http\Controllers\Api\LostPetController::class);
 Route::apiResource('/pet_details', \App\Http\Controllers\Api\PetDetailController::class);
+Route::apiResource('/users', \App\Http\Controllers\Api\UserController::class);
+
 
 
 Route::group([

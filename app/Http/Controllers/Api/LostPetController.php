@@ -20,6 +20,7 @@ class LostPetController extends Controller
     {
         $lostPet = LostPet::get();
         return LostPetResource::collection($lostPet);
+//        return $lostPet;
     }
 
     /**
@@ -31,6 +32,28 @@ class LostPetController extends Controller
     public function store(Request $request)
     {
         $lostPet = new LostPet();
+
+//        if ($request->hasFile('image')) {
+//            $image = $request->file('image');
+//            $path = $image->store('public/images');
+//            $filename = basename($path);
+//            $lostPet->image_path = $filename;
+//        }
+
+//        if ($request->hasFile('image')) {
+//            $image = $request->file('image');
+//            $path = $image->store('public/images');
+//            $lostPet->image_path = $path;
+//        }
+        if ($request->hasFile('image')){
+            $destination_path = 'public/images';
+            $image = $request->file('image');
+            $image_name = $image->hashName();
+            //$image_name = $image->getClientOriginalName();
+
+            $path = $request->file('image')->storeAs($destination_path,$image_name);
+            $lostPet->image_path = $image_name;
+        }
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
         $lostPet->description = $request->get('description');
@@ -39,6 +62,8 @@ class LostPetController extends Controller
         if ($lostPet->save()) {
 //            $petDetail = new PetDetail();
 //            $petDetail->name = fake()->realText(10);
+//            if ($request->has('pet_detail.name'))
+//                $petDetail->name = $request->get('pet_detail')['name'];
 //            $petDetail->type = fake()->realText(10);
 //            $petDetail->age = fake()->numberBetween(1,100);
 //            $petDetail->gender = fake()->realText(10);

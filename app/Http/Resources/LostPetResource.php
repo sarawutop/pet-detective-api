@@ -16,6 +16,7 @@ class LostPetResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'image_path' => $this->image_path,
             'location' => $this->location,
             'lost_at' => $this->lost_at,
             'description' => $this->description,

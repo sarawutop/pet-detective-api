@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('lost_pets', function (Blueprint $table) {
             $table->id();
+            $table->string('image_path')->nullable()->default(null);
             $table->string('location');
             $table->string('lost_at');
             $table->string('description');

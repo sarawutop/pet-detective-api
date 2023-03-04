@@ -34,7 +34,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required',
+            'display_name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6'
         ]);
@@ -44,7 +44,7 @@ class UserController extends Controller
         }
 
         $user = new User();
-        $user->name = $request->get('name');
+        $user->display_name = $request->get('display_name');
         $user->email = $request->get('email');
         $user->password = Hash::make($request->get('password'));
 

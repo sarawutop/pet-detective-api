@@ -25,6 +25,7 @@ class PetDetailResource extends JsonResource
             'size' => $this->size,
             'collar' => $this->collar,
             'leg_ring' => $this->leg_ring,
+            'description' => $this->description,
             'lost_pet' => new LostPetResource($this->whenLoaded('lostPet'))
         ];
     }

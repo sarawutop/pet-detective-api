@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('size')->nullable();
             $table->string('collar')->nullable();
             $table->string('leg_ring')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

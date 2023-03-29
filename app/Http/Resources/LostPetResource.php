@@ -16,11 +16,15 @@ class LostPetResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'created_at' => $this->created_at,
             'image_path' => $this->image_path,
             'location' => $this->location,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
             'lost_at' => $this->lost_at,
             'description' => $this->description,
             'contact_info' => $this->contact_info,
+            'status' => $this->status,
             'pet_detail' => new PetDetailResource($this->WhenLoaded('petDetail'))
         ];
     }

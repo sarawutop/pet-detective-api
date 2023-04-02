@@ -59,6 +59,7 @@ class LostPetController extends Controller
         $lostPet->description = $request->get('description');
         $lostPet->contact_info = $request->get('contact_info');
 
+
         if ($lostPet->save()) {
 //            $petDetail = new PetDetail();
 //            $petDetail->name = fake()->realText(10);

@@ -8,6 +8,7 @@ use App\Models\LostPet;
 use App\Models\PetDetail;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Carbon\Carbon;
 
 class LostPetController extends Controller
 {
@@ -16,6 +17,10 @@ class LostPetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    protected $dateFormat = 'Y-m-d';
+
+
     public function index()
     {
         $lostPet = LostPet::get();
@@ -54,11 +59,19 @@ class LostPetController extends Controller
 //            $path = $request->file('image')->storeAs($destination_path,$image_name);
 //            $lostPet->image_path = $image_name;
 //        }
+        $lostPet->type = $request->get('type');
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
         $lostPet->description = $request->get('description');
         $lostPet->contact_info = $request->get('contact_info');
-
+        $lostPet->status = $request->get('status');
+        $lostPet->latitude = $request->get('latitude');
+        $lostPet->longitude = $request->get('longitude');
+//        $lostPet->created_at = Carbon::now()->format('Y-m-d H:i:s');
+//        $lostPet->setDateFormat('Y-m-d H:i:s');
+//        $lostPet->created_at = Carbon::now();
+//        $lostPet->created_at = Carbon::parse(Carbon::now())->toDateTimeString();
+//        Carbon::parse($lostPet->created_at)->format('d-m-Y');
 
         if ($lostPet->save()) {
 //            $petDetail = new PetDetail();
@@ -145,6 +158,9 @@ class LostPetController extends Controller
      */
     public function update(Request $request, LostPet $lostPet)
     {
+        if ($request->has('type'))
+            $lostPet->type = $request->get('type');
+
         if ($request->has('name'))
             $lostPet->name = $request->get('name');
 
@@ -160,6 +176,18 @@ class LostPetController extends Controller
 
         if ($request->has('contact_info'))
             $lostPet->contact_info = $request->get('contact_info');
+
+        if ($request->has('status'))
+            $lostPet->status = $request->get('status');
+
+        if ($request->has('view'))
+            $lostPet->view = $request->get('view');
+
+        if ($request->has('latitude'))
+            $lostPet->latitude = $request->get('latitude');
+
+        if ($request->has('longitude'))
+            $lostPet->longitude = $request->get('longitude');
 
         if ($lostPet->save()) {
             return response()->json([

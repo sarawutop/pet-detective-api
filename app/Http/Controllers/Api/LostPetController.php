@@ -227,8 +227,7 @@ class LostPetController extends Controller
 
     public function search(Request $request) {
         $q = $request->query('q');
-        $lost_pets = LostPet::where('name', 'LIKE', "%{$q}%")
-                            ->orWhere('type', 'LIKE', "%{$q}%")
+        $lost_pets = LostPet::where('type', 'LIKE', "%{$q}%")
                             ->get();
 
         return $lost_pets;

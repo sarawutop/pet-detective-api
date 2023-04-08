@@ -16,6 +16,7 @@ class FoundPetResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user_id' => $this->user_id,
             'created_at' => $this->created_at,
             'image_path' => $this->image_path,
             'location' => $this->location,

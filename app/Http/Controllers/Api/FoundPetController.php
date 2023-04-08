@@ -36,7 +36,9 @@ class FoundPetController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
         $foundPet = new FoundPet();
+        $foundPet->user_id = $user->id;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -85,7 +87,10 @@ class FoundPetController extends Controller
             if ($request->has('pet_detail.description'))
                 $petDetail->description = $request->get('pet_detail')['description'];
 
+
             $foundPet->petDetail()->save($petDetail);
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Found pet created with id ' . $foundPet->id,
@@ -125,6 +130,14 @@ class FoundPetController extends Controller
      */
     public function update(Request $request, FoundPet $foundPet)
     {
+        $user = auth()->user();
+        if ($user->id !== $foundPet->user->id)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => 'Found pet update failed , Not have permission'
+            ], Response::HTTP_FORBIDDEN);
+        }
 
         if ($request->has('location'))
             $foundPet->location = $request->get('location');
@@ -170,7 +183,17 @@ class FoundPetController extends Controller
      */
     public function destroy(FoundPet $foundPet)
     {
+
         $id = $foundPet->id;
+        $user = auth()->user();
+        if ($user->id !== $foundPet->user->id)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => "Found pet id {$id} delete failed / Not have permission"
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         if ($foundPet->delete()) {
             return response()->json([
                 'success' => true,

@@ -59,7 +59,6 @@ class LostPetController extends Controller
 //            $path = $request->file('image')->storeAs($destination_path,$image_name);
 //            $lostPet->image_path = $image_name;
 //        }
-        $lostPet->type = $request->get('type');
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
         $lostPet->description = $request->get('description');
@@ -158,11 +157,6 @@ class LostPetController extends Controller
      */
     public function update(Request $request, LostPet $lostPet)
     {
-        if ($request->has('type'))
-            $lostPet->type = $request->get('type');
-
-        if ($request->has('name'))
-            $lostPet->name = $request->get('name');
 
 
         if ($request->has('location'))
@@ -212,16 +206,16 @@ class LostPetController extends Controller
      */
     public function destroy(LostPet $lostPet)
     {
-        $name = $lostPet->name;
+        $id = $lostPet->id;
         if ($lostPet->delete()) {
             return response()->json([
                 'success' => true,
-                'message' => "Lost pet {$name} has been deleted"
+                'message' => "Lost pet id {$id} has been deleted"
             ], Response::HTTP_OK);
         }
         return response()->json([
             'success' => false,
-            'message' => "Lost pet {$name} delete failed"
+            'message' => "Lost pet id {$id} delete failed"
         ], Response::HTTP_BAD_REQUEST);
     }
 

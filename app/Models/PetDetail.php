@@ -12,4 +12,8 @@ class PetDetail extends Model
     public function lostPet() {
         return $this->belongsTo(LostPet::class);
     }
+
+    public function foundPet() {
+        return $this->belongsTo(FoundPet::class);
+    }
 }

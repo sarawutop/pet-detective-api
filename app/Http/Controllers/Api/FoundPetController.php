@@ -107,6 +107,11 @@ class FoundPetController extends Controller
      */
     public function show(FoundPet $foundPet)
     {
+        if(is_int($foundPet->view_count))
+        {
+            $foundPet->view_count = $foundPet->view_count + 1;
+            $foundPet->save();
+        }
         $petDetail = $foundPet->petDetail;
         return new FoundPetResource($foundPet);
     }
@@ -136,8 +141,6 @@ class FoundPetController extends Controller
         if ($request->has('status'))
             $foundPet->status = $request->get('status');
 
-        if ($request->has('view'))
-            $foundPet->view = $request->get('view');
 
         if ($request->has('latitude'))
             $foundPet->latitude = $request->get('latitude');

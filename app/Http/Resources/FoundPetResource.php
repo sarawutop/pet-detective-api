@@ -25,7 +25,7 @@ class FoundPetResource extends JsonResource
             'description' => $this->description,
             'contact_info' => $this->contact_info,
             'status' => $this->status,
-            'view' => $this->view,
+            'view_count' => $this->view_count,
             'pet_detail' => new PetDetailResource($this->WhenLoaded('petDetail'))
         ];
     }

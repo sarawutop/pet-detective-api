@@ -47,11 +47,6 @@ class User extends Authenticatable implements JWTSubject
 //        return $this->hasMany(LostPet::class);
 //    }
 
-    public function foundPets()
-    {
-        return $this->hasMany(FoundPet::class);
-    }
-
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -60,5 +55,20 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function foundPets()
+    {
+        return $this->hasMany(FoundPet::class);
+    }
+
+    public function isUser()
+    {
+        return $this->role === 'user';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }

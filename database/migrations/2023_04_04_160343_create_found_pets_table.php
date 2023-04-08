@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('contact_info');
             $table->decimal('latitude', 10, 7)->nullable()->default(null);
             $table->decimal('longitude', 10, 7)->nullable()->default(null);
-            $table->integer('view')->default(0);
+            $table->integer('view_count')->default(0);
             $table->string('status')->default('not found');
             $table->timestamps();
         });

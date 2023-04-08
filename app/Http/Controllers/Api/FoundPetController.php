@@ -36,6 +36,8 @@ class FoundPetController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', FoundPet::class);
+
         $user = auth()->user();
         $foundPet = new FoundPet();
         $foundPet->user_id = $user->id;
@@ -131,14 +133,16 @@ class FoundPetController extends Controller
      */
     public function update(Request $request, FoundPet $foundPet)
     {
-        $user = auth()->user();
-        if ($user->id !== $foundPet->user->id)
-        {
-            return response()->json([
-                'success' => false,
-                'message' => 'Found pet update failed , Not have permission'
-            ], Response::HTTP_FORBIDDEN);
-        }
+        $this->authorize('update', $foundPet);
+
+//        $user = auth()->user();
+//        if ($user->id !== $foundPet->user->id)
+//        {
+//            return response()->json([
+//                'success' => false,
+//                'message' => 'Found pet update failed , Not have permission'
+//            ], Response::HTTP_FORBIDDEN);
+//        }
 
         if ($request->has('location'))
             $foundPet->location = $request->get('location');
@@ -184,16 +188,17 @@ class FoundPetController extends Controller
      */
     public function destroy(FoundPet $foundPet)
     {
+        $this->authorize('delete', $foundPet);
 
         $id = $foundPet->id;
-        $user = auth()->user();
-        if ($user->id !== $foundPet->user->id)
-        {
-            return response()->json([
-                'success' => false,
-                'message' => "Found pet id {$id} delete failed / Not have permission"
-            ], Response::HTTP_FORBIDDEN);
-        }
+//        $user = auth()->user();
+//        if ($user->id !== $foundPet->user->id)
+//        {
+//            return response()->json([
+//                'success' => false,
+//                'message' => "Found pet id {$id} delete failed / Not have permission"
+//            ], Response::HTTP_FORBIDDEN);
+//        }
 
         if ($foundPet->delete()) {
             return response()->json([

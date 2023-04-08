@@ -133,7 +133,7 @@ class FoundPetController extends Controller
      */
     public function update(Request $request, FoundPet $foundPet)
     {
-        $this->authorize('update', $foundPet);
+//        $this->authorize('update', $foundPet);
 
 //        $user = auth()->user();
 //        if ($user->id !== $foundPet->user->id)
@@ -143,6 +143,13 @@ class FoundPetController extends Controller
 //                'message' => 'Found pet update failed , Not have permission'
 //            ], Response::HTTP_FORBIDDEN);
 //        }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $path = $image->store('public/images');
+            $filename = basename($path);
+            $foundPet->image_path = $filename;
+        }
 
         if ($request->has('location'))
             $foundPet->location = $request->get('location');
@@ -167,6 +174,43 @@ class FoundPetController extends Controller
             $foundPet->longitude = $request->get('longitude');
 
         if ($foundPet->save()) {
+
+            $petDetail = $foundPet->petDetail()->first();
+
+            if ($request->has('pet_detail.name'))
+                $petDetail->name = $request->get('pet_detail')['name'];
+
+            if ($request->has('pet_detail.type'))
+                $petDetail->type = $request->get('pet_detail')['type'];
+
+            if ($request->has('pet_detail.age'))
+                $petDetail->age = $request->get('pet_detail')['age'];
+
+            if ($request->has('pet_detail.gender'))
+                $petDetail->gender = $request->get('pet_detail')['gender'];
+
+            if ($request->has('pet_detail.breed'))
+                $petDetail->breed = $request->get('pet_detail')['breed'];
+
+            if ($request->has('pet_detail.color'))
+                $petDetail->color = $request->get('pet_detail')['color'];
+
+            if ($request->has('pet_detail.size'))
+                $petDetail->size = $request->get('pet_detail')['size'];
+
+            if ($request->has('pet_detail.collar'))
+                $petDetail->collar = $request->get('pet_detail')['collar'];
+
+            if ($request->has('pet_detail.leg_ring'))
+                $petDetail->leg_ring = $request->get('pet_detail')['leg_ring'];
+
+            if ($request->has('pet_detail.description'))
+                $petDetail->description = $request->get('pet_detail')['description'];
+
+
+            $foundPet->petDetail()->save($petDetail);
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Found pet updated with id ' . $foundPet->id,

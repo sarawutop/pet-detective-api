@@ -119,6 +119,7 @@ class FoundPetController extends Controller
         }
         $petDetail = $foundPet->petDetail;
         return new FoundPetResource($foundPet);
+
     }
 
     /**

@@ -16,17 +16,16 @@ return new class extends Migration
     {
         Schema::create('lost_pets', function (Blueprint $table) {
             $table->id();
-//            $table->foreignIdFor(\App\Models\User::class);
-//            $table->string('type')->default('lost-pet');
+            $table->foreignIdFor(\App\Models\User::class); // user_id
             $table->string('image_path')->nullable()->default(null);
             $table->string('location');
             $table->dateTime('lost_at');
             $table->string('description');
             $table->string('contact_info');
-            $table->string('status')->default('not found');
             $table->decimal('latitude', 10, 7)->nullable()->default(null);
             $table->decimal('longitude', 10, 7)->nullable()->default(null);
-            $table->integer('view')->default(0);
+            $table->integer('view_count')->default(0);
+            $table->string('status')->default('not found');
             $table->timestamps();
             $table->softDeletes();
         });

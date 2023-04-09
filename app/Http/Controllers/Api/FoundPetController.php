@@ -133,7 +133,7 @@ class FoundPetController extends Controller
      */
     public function update(Request $request, FoundPet $foundPet)
     {
-//        $this->authorize('update', $foundPet);
+        $this->authorize('update', $foundPet);
 
 //        $user = auth()->user();
 //        if ($user->id !== $foundPet->user->id)

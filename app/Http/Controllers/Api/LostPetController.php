@@ -40,6 +40,8 @@ class LostPetController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', LostPet::class);
+
         $user = auth()->user();
         $lostPet = new LostPet();
         $lostPet->user_id = $user->id;
@@ -168,6 +170,8 @@ class LostPetController extends Controller
      */
     public function update(Request $request, LostPet $lostPet)
     {
+        $this->authorize('update', $lostPet);
+
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $path = $image->store('public/images');
@@ -255,6 +259,8 @@ class LostPetController extends Controller
      */
     public function destroy(LostPet $lostPet)
     {
+        $this->authorize('delete', $lostPet);
+
         $id = $lostPet->id;
         if ($lostPet->delete()) {
             return response()->json([

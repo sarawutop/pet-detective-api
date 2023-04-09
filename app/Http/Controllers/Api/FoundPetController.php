@@ -166,7 +166,6 @@ class FoundPetController extends Controller
         if ($request->has('status'))
             $foundPet->status = $request->get('status');
 
-
         if ($request->has('latitude'))
             $foundPet->latitude = $request->get('latitude');
 

@@ -12,20 +12,24 @@ use Carbon\Carbon;
 
 class LostPetController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
 
-    protected $dateFormat = 'Y-m-d';
+//    protected $dateFormat = 'Y-m-d';
 
 
     public function index()
     {
         $lostPet = LostPet::get();
         return LostPetResource::collection($lostPet);
-//        return $lostPet;
     }
 
     /**
@@ -36,7 +40,9 @@ class LostPetController extends Controller
      */
     public function store(Request $request)
     {
+        $user = auth()->user();
         $lostPet = new LostPet();
+        $lostPet->user_id = $user->id;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -144,6 +150,11 @@ class LostPetController extends Controller
      */
     public function show(LostPet $lostPet)
     {
+        if(is_int($lostPet->view_count))
+        {
+            $lostPet->view_count = $lostPet->view_count + 1;
+            $lostPet->save();
+        }
         $petDetail = $lostPet->petDetail;
         return new LostPetResource($lostPet);
     }
@@ -157,7 +168,12 @@ class LostPetController extends Controller
      */
     public function update(Request $request, LostPet $lostPet)
     {
-
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $path = $image->store('public/images');
+            $filename = basename($path);
+            $lostPet->image_path = $filename;
+        }
 
         if ($request->has('location'))
             $lostPet->location = $request->get('location');
@@ -174,9 +190,6 @@ class LostPetController extends Controller
         if ($request->has('status'))
             $lostPet->status = $request->get('status');
 
-        if ($request->has('view'))
-            $lostPet->view = $request->get('view');
-
         if ($request->has('latitude'))
             $lostPet->latitude = $request->get('latitude');
 
@@ -184,6 +197,42 @@ class LostPetController extends Controller
             $lostPet->longitude = $request->get('longitude');
 
         if ($lostPet->save()) {
+
+            $petDetail = $lostPet->petDetail()->first();
+
+            if ($request->has('pet_detail.name'))
+                $petDetail->name = $request->get('pet_detail')['name'];
+
+            if ($request->has('pet_detail.type'))
+                $petDetail->type = $request->get('pet_detail')['type'];
+
+            if ($request->has('pet_detail.age'))
+                $petDetail->age = $request->get('pet_detail')['age'];
+
+            if ($request->has('pet_detail.gender'))
+                $petDetail->gender = $request->get('pet_detail')['gender'];
+
+            if ($request->has('pet_detail.breed'))
+                $petDetail->breed = $request->get('pet_detail')['breed'];
+
+            if ($request->has('pet_detail.color'))
+                $petDetail->color = $request->get('pet_detail')['color'];
+
+            if ($request->has('pet_detail.size'))
+                $petDetail->size = $request->get('pet_detail')['size'];
+
+            if ($request->has('pet_detail.collar'))
+                $petDetail->collar = $request->get('pet_detail')['collar'];
+
+            if ($request->has('pet_detail.leg_ring'))
+                $petDetail->leg_ring = $request->get('pet_detail')['leg_ring'];
+
+            if ($request->has('pet_detail.description'))
+                $petDetail->description = $request->get('pet_detail')['description'];
+
+
+            $lostPet->petDetail()->save($petDetail);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Lost pet updated with id ' . $lostPet->id,

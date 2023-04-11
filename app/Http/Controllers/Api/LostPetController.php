@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\LostPetResource;
+use App\Models\Comment;
 use App\Models\LostPet;
 use App\Models\PetDetail;
 use Illuminate\Http\Request;
@@ -53,20 +55,6 @@ class LostPetController extends Controller
             $lostPet->image_path = $filename;
         }
 
-//        if ($request->hasFile('image')) {
-//            $image = $request->file('image');
-//            $path = $image->store('public/images');
-//            $lostPet->image_path = $path;
-//        }
-//        if ($request->hasFile('image')){
-//            $destination_path = 'public/images';
-//            $image = $request->file('image');
-//            $image_name = $image->hashName();
-//            //$image_name = $image->getClientOriginalName();
-//
-//            $path = $request->file('image')->storeAs($destination_path,$image_name);
-//            $lostPet->image_path = $image_name;
-//        }
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
         $lostPet->description = $request->get('description');
@@ -74,28 +62,10 @@ class LostPetController extends Controller
         $lostPet->status = $request->get('status');
         $lostPet->latitude = $request->get('latitude');
         $lostPet->longitude = $request->get('longitude');
-//        $lostPet->created_at = Carbon::now()->format('Y-m-d H:i:s');
-//        $lostPet->setDateFormat('Y-m-d H:i:s');
-//        $lostPet->created_at = Carbon::now();
-//        $lostPet->created_at = Carbon::parse(Carbon::now())->toDateTimeString();
-//        Carbon::parse($lostPet->created_at)->format('d-m-Y');
+
 
         if ($lostPet->save()) {
-//            $petDetail = new PetDetail();
-//            $petDetail->name = fake()->realText(10);
-//            if ($request->has('pet_detail.name'))
-//                $petDetail->name = $request->get('pet_detail')['name'];
-//            $petDetail->type = fake()->realText(10);
-//            $petDetail->age = fake()->numberBetween(1,100);
-//            $petDetail->gender = fake()->realText(10);
-//            $petDetail->breed = fake()->realText(10);
-//            $petDetail->color = fake()->realText(10);
-//            $petDetail->size = fake()->realText(10);
-//            $petDetail->collar = fake()->realText(10);
-//            $petDetail->leg_ring = fake()->realText(10);
-//
-//            $lostPet->petDetail()->save($petDetail);
-//
+
             $petDetail = new PetDetail();
             if ($request->has('pet_detail.name'))
                 $petDetail->name = $request->get('pet_detail')['name'];
@@ -280,5 +250,25 @@ class LostPetController extends Controller
                             ->get();
 
         return $lost_pets;
+    }
+
+    public function storeComment(Request $request, LostPet $lostPet)
+    {
+        $comment = new Comment();
+        $comment->user_id = auth()->user()->id;
+        $comment->message = $request->get('message');
+        if ($lostPet->comments()->save($comment))
+        {
+            return response()->json([
+                'success' => true,
+                'message' => 'Add a comment in Found pet id ' . $lostPet->id,
+
+            ], Response::HTTP_CREATED);
+        }
+    }
+
+    public function getComments(LostPet $lostPet)
+    {
+        return CommentResource::collection($lostPet->comments);
     }
 }

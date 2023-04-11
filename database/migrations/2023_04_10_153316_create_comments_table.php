@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\FoundPet::class)->nullable()->constrained()->onDelete('CASCADE'); // foreign key `found_pet_id`
             $table->foreignIdFor(\App\Models\LostPet::class)->nullable()->constrained()->onDelete('CASCADE'); // foreign key `lost_pet_id`
+            $table->foreignIdFor(\App\Models\User::class)->nullable();
             $table->text('message');
             $table->timestamps();
             $table->softDeletes();    // `deleted_at`

@@ -16,4 +16,8 @@ class LostPet extends Model
     public function petDetail() {
         return $this->hasOne(PetDetail::class);
     }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
 }

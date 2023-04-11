@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\FoundPetResource;
+use App\Models\Comment;
 use App\Models\FoundPet;
 use App\Models\PetDetail;
 use Illuminate\Http\Request;
@@ -13,7 +15,7 @@ class FoundPetController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index', 'show', 'getComments']);
     }
 
     /**
@@ -25,7 +27,6 @@ class FoundPetController extends Controller
     {
         $foundPet = FoundPet::get();
         return FoundPetResource::collection($foundPet);
-
     }
 
     /**
@@ -120,6 +121,7 @@ class FoundPetController extends Controller
             $foundPet->save();
         }
         $petDetail = $foundPet->petDetail;
+        $comments = $foundPet->comments;
         return new FoundPetResource($foundPet);
 
     }
@@ -135,14 +137,6 @@ class FoundPetController extends Controller
     {
         $this->authorize('update', $foundPet);
 
-//        $user = auth()->user();
-//        if ($user->id !== $foundPet->user->id)
-//        {
-//            return response()->json([
-//                'success' => false,
-//                'message' => 'Found pet update failed , Not have permission'
-//            ], Response::HTTP_FORBIDDEN);
-//        }
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -234,14 +228,6 @@ class FoundPetController extends Controller
         $this->authorize('delete', $foundPet);
 
         $id = $foundPet->id;
-//        $user = auth()->user();
-//        if ($user->id !== $foundPet->user->id)
-//        {
-//            return response()->json([
-//                'success' => false,
-//                'message' => "Found pet id {$id} delete failed / Not have permission"
-//            ], Response::HTTP_FORBIDDEN);
-//        }
 
         if ($foundPet->delete()) {
             return response()->json([
@@ -253,5 +239,25 @@ class FoundPetController extends Controller
             'success' => false,
             'message' => "Found pet id {$id} delete failed"
         ], Response::HTTP_BAD_REQUEST);
+    }
+
+    public function storeComment(Request $request, FoundPet $foundPet)
+    {
+        $comment = new Comment();
+        $comment->user_id = auth()->user()->id;
+        $comment->message = $request->get('message');
+        if ($foundPet->comments()->save($comment))
+        {
+            return response()->json([
+                'success' => true,
+                'message' => 'Add a comment in Found pet id ' . $foundPet->id,
+
+             ], Response::HTTP_CREATED);
+        }
+    }
+
+    public function getComments(FoundPet $foundPet)
+    {
+        return CommentResource::collection($foundPet->comments);
     }
 }

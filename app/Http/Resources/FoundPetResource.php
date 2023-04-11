@@ -27,7 +27,8 @@ class FoundPetResource extends JsonResource
             'contact_info' => $this->contact_info,
             'status' => $this->status,
             'view_count' => $this->view_count,
-            'pet_detail' => new PetDetailResource($this->WhenLoaded('petDetail'))
+            'pet_detail' => new PetDetailResource($this->WhenLoaded('petDetail')),
+            'comments' => CommentResource::collection($this->comments),
         ];
     }
 }

@@ -26,12 +26,18 @@ Route::get('/', function () {
 
 
 Route::get('/lost_pets/search', [\App\Http\Controllers\Api\LostPetController::class, 'search']);
+Route::post('/lost-pets/{lost_pet}/comments', [\App\Http\Controllers\Api\LostPetController::class, 'storeComment']);
+Route::get('/lost-pets/{lost_pet}/comments', [\App\Http\Controllers\Api\LostPetController::class, 'getComments']);
 Route::apiResource('/lost-pets', \App\Http\Controllers\Api\LostPetController::class);
+
+
+Route::post('/found-pets/{found_pet}/comments', [\App\Http\Controllers\Api\FoundPetController::class, 'storeComment']);
+Route::get('/found-pets/{found_pet}/comments', [\App\Http\Controllers\Api\FoundPetController::class, 'getComments']);
 Route::apiResource('/found-pets', \App\Http\Controllers\Api\FoundPetController::class);
+
+
 Route::apiResource('/pet-details', \App\Http\Controllers\Api\PetDetailController::class);
 Route::apiResource('/users', \App\Http\Controllers\Api\UserController::class);
-
-
 
 Route::group([
     'middleware' => 'api',

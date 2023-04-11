@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\FoundPet::class)->nullable(); // foreign key `found_pet_id`
-            $table->foreignIdFor(\App\Models\LostPet::class)->nullable(); // foreign key `lost_pet_id`
+            $table->foreignIdFor(\App\Models\FoundPet::class)->nullable()->constrained()->onDelete('CASCADE'); // foreign key `found_pet_id`
+            $table->foreignIdFor(\App\Models\LostPet::class)->nullable()->constrained()->onDelete('CASCADE'); // foreign key `lost_pet_id`
             $table->text('message');
             $table->timestamps();
             $table->softDeletes();    // `deleted_at`

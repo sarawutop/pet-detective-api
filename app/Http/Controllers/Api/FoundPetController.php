@@ -15,7 +15,7 @@ class FoundPetController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api')->except(['index', 'show', 'getComments']);
+        $this->middleware('auth:api')->except(['index', 'show', 'getComments', 'search', 'searchFoundPets']);
     }
 
     /**
@@ -246,6 +246,7 @@ class FoundPetController extends Controller
         $comment = new Comment();
         $comment->user_id = auth()->user()->id;
         $comment->message = $request->get('message');
+
         if ($foundPet->comments()->save($comment))
         {
             return response()->json([
@@ -260,4 +261,50 @@ class FoundPetController extends Controller
     {
         return CommentResource::collection($foundPet->comments);
     }
+
+
+    public function search(Request $request)
+    {
+        $petType = $request->query('petType');
+        $status = $request->query('status');
+        $lat = $request->query('lat');
+        $lng = $request->query('lng');
+        $minDistance = $request->query('minDistance');
+        $maxDistance = $request->query('maxDistance');
+
+
+        $foundPets = FoundPet::with('petDetail')->whereHas('petDetail', fn($foundPet) => $foundPet->where('type', 'LIKE', "%{$petType}%"));
+
+        if ($status) {
+            $foundPets = $foundPets->where('status', '=', $status);
+        }
+
+        if ($maxDistance && $lat && $lng) {
+            $foundPets = $foundPets->get()
+                ->where(fn ($foundPet) =>
+                    round($this->getDistanceFromLatLonInKm($foundPet->latitude, $foundPet->longitude, $lat, $lng),2)
+                    <= $maxDistance
+                );
+        } else {
+            $foundPets = $foundPets->get();
+        }
+
+        return FoundPetResource::collection($foundPets);
+    }
+
+    public function getDistanceFromLatLonInKm($lat1, $lon1, $lat2, $lon2)
+    {
+        $R = 6371; // รัศมีของโลกในหน่วย km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a =
+            sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2)
+        ;
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $d = $R * $c; // ระยะทางในหน่วย km
+        return $d;
+    }
+
 }

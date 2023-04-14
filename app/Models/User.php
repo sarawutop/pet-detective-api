@@ -43,9 +43,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-//    public function lost_pets() {
-//        return $this->hasMany(LostPet::class);
-//    }
 
     public function getJWTIdentifier()
     {

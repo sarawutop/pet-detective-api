@@ -25,12 +25,12 @@ Route::get('/', function () {
 });
 
 
-Route::get('/lost_pets/search', [\App\Http\Controllers\Api\LostPetController::class, 'search']);
+Route::get('/lost-pets/search', [\App\Http\Controllers\Api\LostPetController::class, 'search']);
 Route::post('/lost-pets/{lost_pet}/comments', [\App\Http\Controllers\Api\LostPetController::class, 'storeComment']);
 Route::get('/lost-pets/{lost_pet}/comments', [\App\Http\Controllers\Api\LostPetController::class, 'getComments']);
 Route::apiResource('/lost-pets', \App\Http\Controllers\Api\LostPetController::class);
 
-
+Route::get('/found-pets/search', [\App\Http\Controllers\Api\FoundPetController::class, 'search']);
 Route::post('/found-pets/{found_pet}/comments', [\App\Http\Controllers\Api\FoundPetController::class, 'storeComment']);
 Route::get('/found-pets/{found_pet}/comments', [\App\Http\Controllers\Api\FoundPetController::class, 'getComments']);
 Route::apiResource('/found-pets', \App\Http\Controllers\Api\FoundPetController::class);

@@ -99,11 +99,9 @@ class LostPetController extends Controller
 
             $lostPet->petDetail()->save($petDetail);
 
-//            $testkub = $request->get('pet_details')['name'];
 
             return response()->json([
                 'success' => true,
-//                'test' => $testkub,
                 'message' => 'Lost pet created with id ' . $lostPet->id,
                 'lost_pet_id' => $lostPet->id
             ], Response::HTTP_CREATED);
@@ -128,6 +126,7 @@ class LostPetController extends Controller
             $lostPet->save();
         }
         $petDetail = $lostPet->petDetail;
+        $comments = $lostPet->comments;
         return new LostPetResource($lostPet);
     }
 
@@ -244,13 +243,7 @@ class LostPetController extends Controller
         ], Response::HTTP_BAD_REQUEST);
     }
 
-    public function search(Request $request) {
-        $q = $request->query('q');
-        $lost_pets = LostPet::where('type', 'LIKE', "%{$q}%")
-                            ->get();
 
-        return $lost_pets;
-    }
 
     public function storeComment(Request $request, LostPet $lostPet)
     {
@@ -270,5 +263,49 @@ class LostPetController extends Controller
     public function getComments(LostPet $lostPet)
     {
         return CommentResource::collection($lostPet->comments);
+    }
+
+    public function search(Request $request)
+    {
+        $petType = $request->query('petType');
+        $status = $request->query('status');
+        $lat = $request->query('lat');
+        $lng = $request->query('lng');
+        $minDistance = $request->query('minDistance');
+        $maxDistance = $request->query('maxDistance');
+
+
+        $lostPets = LostPet::with('petDetail')->whereHas('petDetail', fn($lostPet) => $lostPet->where('type', 'LIKE', "%{$petType}%"));
+
+        if ($status) {
+            $lostPets = $lostPets->where('status', '=', $status);
+        }
+
+        if ($maxDistance && $lat && $lng) {
+            $lostPets = $lostPets->get()
+                ->where(fn ($lostPet) =>
+                    round($this->getDistanceFromLatLonInKm($lostPet->latitude, $lostPet->longitude, $lat, $lng),2)
+                    <= $maxDistance
+                );
+        } else {
+            $lostPets = $lostPets->get();
+        }
+
+        return LostPetResource::collection($lostPets);
+    }
+
+    public function getDistanceFromLatLonInKm($lat1, $lon1, $lat2, $lon2)
+    {
+        $R = 6371; // รัศมีของโลกในหน่วย km
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a =
+            sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2)
+        ;
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $d = $R * $c; // ระยะทางในหน่วย km
+        return $d;
     }
 }

@@ -273,7 +273,10 @@ class FoundPetController extends Controller
         $maxDistance = $request->query('maxDistance');
 
 
-        $foundPets = FoundPet::with('petDetail')->whereHas('petDetail', fn($foundPet) => $foundPet->where('type', 'LIKE', "%{$petType}%"));
+
+
+        $foundPets = FoundPet::with('petDetail')
+            ->whereHas('petDetail', fn($foundPet) => $foundPet->where('type', 'LIKE', "%{$petType}%"));
 
         if ($status) {
             $foundPets = $foundPets->where('status', '=', $status);

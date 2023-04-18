@@ -20,6 +20,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'image_path' => $this->image_path,
             'role' => $this->role,
+            'found_pets' => $this->foundPets,
+            'lost_pets' => $this->lostPets
         ];
     }
 }

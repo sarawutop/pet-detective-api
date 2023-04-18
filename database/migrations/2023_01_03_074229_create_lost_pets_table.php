@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('lost_pets', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\User::class); // user_id
-            $table->string('image_path')->nullable()->default(null);
+            $table->string('image_path')->nullable()->default('no-image.jpg');
             $table->string('location');
             $table->dateTime('lost_at');
             $table->string('description');

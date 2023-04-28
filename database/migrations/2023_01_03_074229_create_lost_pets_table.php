@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('image_path')->nullable()->default('no-image.jpg');
             $table->string('location');
             $table->dateTime('lost_at');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('contact_info');
             $table->decimal('latitude', 10, 7)->nullable()->default(null);
             $table->decimal('longitude', 10, 7)->nullable()->default(null);

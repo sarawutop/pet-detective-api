@@ -52,7 +52,8 @@ class FoundPetController extends Controller
 
         $foundPet->location = $request->get('location');
         $foundPet->found_at = $request->get('found_at');
-        $foundPet->description = $request->get('description');
+        if ($request->has('contact_info'))
+            $foundPet->contact_info = $request->get('contact_info');
         $foundPet->contact_info = $request->get('contact_info');
         $foundPet->latitude = $request->get('latitude');
         $foundPet->longitude = $request->get('longitude');

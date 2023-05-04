@@ -57,7 +57,8 @@ class LostPetController extends Controller
 
         $lostPet->location = $request->get('location');
         $lostPet->lost_at = $request->get('lost_at');
-        $lostPet->description = $request->get('description');
+        if ($request->has('description'))
+            $lostPet->description = $request->get('description');
         $lostPet->contact_info = $request->get('contact_info');
         $lostPet->status = $request->get('status');
         $lostPet->latitude = $request->get('latitude');
